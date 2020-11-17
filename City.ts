@@ -6,7 +6,7 @@ export class City {
     country: string;
     balance: object;
     isCompleted: boolean;
-    neighbours: City[];
+    isNeighbour: boolean;
 
     constructor(x: number, y: number, country: string){
         this.x = x;
@@ -16,7 +16,7 @@ export class City {
         // @ts-ignore
         this.balance[country] = INITIAL_COINS;
         this.isCompleted = false;
-        this.neighbours = [];
+        this.isNeighbour = false;
     }
 
     transfer(country: string, amount: number): void{

@@ -26,6 +26,9 @@ export class Grid {
         }
         countries.map((country: Country) => {
             country.cities.map(city =>{
+                if(this.grid[city.x][city.y]){
+                    throw new Error('City overlapped')
+                }
                 this.grid[city.x][city.y] = city;
             });
         });
@@ -58,22 +61,34 @@ export class Grid {
     distributeToNeighbours(instruction: IPortion): void{
         const {city, portion} = instruction;
         const {x,y} = city;
+        let neighbor = false;
         Object.keys(portion).map((key: string) => {
             if(this.grid[x-1] && this.grid[x-1][y]){
+                if(this.grid[x-1][y].country !== city.country){
+                    neighbor = true;
+                }
                 this.transfer(this.grid[x-1][y], city, portion[key]);
             }
             if(this.grid[x+1] && this.grid[x+1][y]){
+                if(this.grid[x+1][y].country !== city.country){
+                    neighbor = true;
+                }
                 this.transfer(this.grid[x+1][y], city, portion[key]);
             }
             if(this.grid[x] && this.grid[x][y+1]){
+                if(this.grid[x][y+1].country !== city.country){
+                    neighbor = true;
+                }
                 this.transfer(this.grid[x][y+1], city, portion[key]);
             }
             if(this.grid[x] && this.grid[x][y-1]){
+                if(this.grid[x][y-1].country !== city.country){
+                    neighbor = true;
+                }
                 this.transfer(this.grid[x][y-1], city, portion[key]);
             }
         });
-
-
+        city.isNeighbour = neighbor;
     }
     calculateCompletion(): void{
         let day = 0;
@@ -85,7 +100,7 @@ export class Grid {
                 });
             });
 
-            if(this.checkIfComplete()) break;
+            if(day > 0 && this.checkIfComplete()) break;
 
             let portions = [];
             for(let x=0;x<this.grid.length;x++){
@@ -117,6 +132,9 @@ export class Grid {
     checkIfComplete(): boolean{
         let allCompleted = true;
         this.countries.forEach(country => {
+            if(!country.checkNeighbors()){
+                throw new Error('NO Neighbors')
+            }
             if(!country.isCompleted) {
                 allCompleted = false;
                 return allCompleted;

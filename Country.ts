@@ -31,4 +31,7 @@ export class Country{
         return cities;
     }
 
+    checkNeighbors() : boolean {
+        return this.cities.some(city => city.isNeighbour)
+    }
 };
