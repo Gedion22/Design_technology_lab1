@@ -49,11 +49,14 @@ countries.map(countr => {
 });
 console.log(isValid);
 if(isValid){
-    const grid = new Grid(countries);
-    // console.log(grid);
-    grid.log();
-    grid.calculateCompletion();
-    output = grid.output();
+    try {
+        const grid = new Grid(countries);
+        grid.log();
+        grid.calculateCompletion();
+        output = grid.output();
+    }catch (e) {
+        console.log('Error: '+e.message)
+    }
 }
 else{
     output += `input invalid\n`;
