@@ -58,38 +58,32 @@ export class Grid {
         city.transfer(key[0], -portion[key[0]]);
         neighbour.transfer(key[0], portion[key[0]]);
     }
+
+    transferToNeighbours(currentColumn: City[], neighbour: City, instruction: IPortion, key: string): boolean {
+        const {city, portion} = instruction;
+        let neighbor = false;
+        if(currentColumn && neighbour){
+            if(neighbour.country !== city.country){
+                neighbor = true;
+            }
+            this.transfer(neighbour, city, portion[key]);
+        }
+        return neighbor;
+    }
+
     distributeToNeighbours(instruction: IPortion): void{
         const {city, portion} = instruction;
         const {x,y} = city;
         let neighbor = false;
         Object.keys(portion).map((key: string) => {
-            if(this.grid[x-1] && this.grid[x-1][y]){
-                if(this.grid[x-1][y].country !== city.country){
-                    neighbor = true;
-                }
-                this.transfer(this.grid[x-1][y], city, portion[key]);
-            }
-            if(this.grid[x+1] && this.grid[x+1][y]){
-                if(this.grid[x+1][y].country !== city.country){
-                    neighbor = true;
-                }
-                this.transfer(this.grid[x+1][y], city, portion[key]);
-            }
-            if(this.grid[x] && this.grid[x][y+1]){
-                if(this.grid[x][y+1].country !== city.country){
-                    neighbor = true;
-                }
-                this.transfer(this.grid[x][y+1], city, portion[key]);
-            }
-            if(this.grid[x] && this.grid[x][y-1]){
-                if(this.grid[x][y-1].country !== city.country){
-                    neighbor = true;
-                }
-                this.transfer(this.grid[x][y-1], city, portion[key]);
-            }
+            neighbor = this.transferToNeighbours(this.grid[x-1], this.grid[x-1][y], instruction, key);
+            neighbor = this.transferToNeighbours(this.grid[x+1], this.grid[x+1][y], instruction, key);
+            neighbor = this.transferToNeighbours(this.grid[x], this.grid[x][y+1], instruction, key);
+            neighbor = this.transferToNeighbours(this.grid[x], this.grid[x][y-1], instruction, key);
         });
         city.isNeighbour = neighbor;
     }
+
     calculateCompletion(): void{
         let day = 0;
         while(1){

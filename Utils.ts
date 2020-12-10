@@ -1,19 +1,19 @@
 import {Country} from "./Country";
 
 export  const getLengthString = (countries: Country[]):number => {
-    let l = 6;
+    let minWordLength = 6;
     countries.map(c =>{
-        if(c.name.length+1 > l){
-            l = c.name.length+3;
+        if(c.name.length+1 > minWordLength){
+            minWordLength = c.name.length+3;
         }
     });
-    return l;
+    return minWordLength;
 };
 
-export const manageString = (str: string, l: number): string =>{
+export const manageString = (str: string, wordLength: number): string =>{
     let output = str;
-    if(str.length < l){
-        for(let i = 0; i < l - str.length; i++){
+    if(str.length < wordLength){
+        for(let i = 0; i < wordLength - str.length; i++){
             output += ' ';
         }
     }
