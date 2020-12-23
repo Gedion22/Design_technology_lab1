@@ -16,13 +16,8 @@ export class Grid {
         this.countries = countries;
         const { xl, yl, xh, yh } = this.findBoundaries(countries);
         this.grid = [];
-        try{
-            for(let i=0; i<= xh - xl + 1; i++){
-                this.grid[i] = new Array(yh - yl + 1);
-            }
-        }
-        catch (e) {
-            console.log(e);
+        for(let i=0; i<= xh - xl + 1; i++){
+            this.grid[i] = new Array(yh - yl + 1);
         }
         countries.map((country: Country) => {
             country.cities.map(city =>{
@@ -34,11 +29,18 @@ export class Grid {
         });
     }
 
+    getMinBoundary(countries: Country[], key: string): number {
+        return (countries.reduce((min: number, p: Country) => p[key] < min ? p[key] : min, countries[0][key]));
+    }
+    getMaxBoundary(countries: Country[], key: string): number {
+        return (countries.reduce((max: number, p: Country) => p[key] > max ? p[key] : max, countries[0][key]));
+    }
+
     findBoundaries(countries: Country[]) : {xl: number, yl: number, xh: number, yh: number}{
-        const xl = (countries.reduce((min: number, p: Country) => p.xl < min ? p.xl : min, countries[0].xl));
-        const yl = (countries.reduce((min: number, p: Country) => p.yl < min ? p.yl : min, countries[0].yl));
-        const xh = (countries.reduce((max: number, p: Country) => p.xh > max ? p.xh : max, countries[0].xh));
-        const yh = (countries.reduce((max: number, p: Country) => p.yh > max ? p.yh : max, countries[0].yh));
+        const xl = this.getMinBoundary(countries,'xl');
+        const yl = this.getMinBoundary(countries,'yl');
+        const xh = this.getMaxBoundary(countries,'xh');
+        const yh = this.getMaxBoundary(countries,'yh');
         return { xl, yl, xh, yh };
     }
 
@@ -76,10 +78,10 @@ export class Grid {
         const {x,y} = city;
         let neighbor = false;
         Object.keys(portion).map((key: string) => {
-            neighbor = this.transferToNeighbours(this.grid[x-1], this.grid[x-1][y], instruction, key);
-            neighbor = this.transferToNeighbours(this.grid[x+1], this.grid[x+1][y], instruction, key);
-            neighbor = this.transferToNeighbours(this.grid[x], this.grid[x][y+1], instruction, key);
-            neighbor = this.transferToNeighbours(this.grid[x], this.grid[x][y-1], instruction, key);
+            neighbor = neighbor || this.transferToNeighbours(this.grid[x-1], this.grid[x-1]?this.grid[x-1][y]:null, instruction, key);
+            neighbor = neighbor || this.transferToNeighbours(this.grid[x+1], this.grid[x+1]?this.grid[x+1][y]:null, instruction, key);
+            neighbor = neighbor || this.transferToNeighbours(this.grid[x], this.grid[x][y+1], instruction, key);
+            neighbor = neighbor || this.transferToNeighbours(this.grid[x], this.grid[x][y-1], instruction, key);
         });
         city.isNeighbour = neighbor;
     }

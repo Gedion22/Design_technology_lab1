@@ -56,6 +56,7 @@ if(isValid){
         output = grid.output();
     }catch (e) {
         console.log('Error: '+e.message)
+        console.log(e)
     }
 }
 else{
