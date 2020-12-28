@@ -158,18 +158,18 @@ export class Grid {
 
     log(): void{
         let output = '';
-        const l = getLengthString(this.countries);
+        const stringLength = getLengthString(this.countries);
         this.grid.map(x =>{
             if(!x){
                 for (let i = 0; i < MAP_MAX; i++){
-                    output = output + manageString('Empty ', l);
+                    output = output + manageString('Empty ', stringLength);
                 }
             } else {
                 for (let i = 0; i < MAP_MAX; i++){
                     if(!x[i])
-                        output = output + manageString('Empty', l);
+                        output = output + manageString('Empty', stringLength);
                     else
-                        output = output + manageString(`[${x[i].country}] `, l);
+                        output = output + manageString(`[${x[i].country}] `, stringLength);
                 }
             }
             output = output + '\n';
